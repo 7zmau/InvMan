@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3 id="get-started-label">Get Started</h3>
+<br>
+<h5 id="enter-business-label">Enter existing business</h5>
+<div id="enter-business">
+    <form action="/" method ="post">
+        <div id="login-label">
+            <label>Enter Business ID:</label>
+        </div>
+        <div id="login-input">
+            <input name="registered_b_id" id="registered_b_id" required>
+        </div>
+        <div>
+            <input name="login" type="submit" value="Login">
+        </div>
+    </form>
+</div>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div id="start-page-error" class="error">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <div class="clr-four"></div>
+   <br>
+<h5 id="create-business-label">Create a business ID</h5>
+<div id="create-business">
+    <form method="post">
+        <div id="register-id-label">
+            <label>New Business ID:</label>
+        </div>
+        <div id="register-id-input">
+            <input name="create_b_id" id="create_b_id" required><br>
+        </div>
+        <div id="register-name-label">
+            <label>Business Name:</label>
+        </div>
+        <div id="register-name-input">
+            <input name="create_b_name" id="create_b_name" required><br>
+        </div>
+        <div>
+            <input name ="register" type="submit" value="Register"><br>
+        </div>
+    </form>
+</div>
+{% endblock %}

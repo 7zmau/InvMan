@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block head %}
+    <div id="main-nav">
+        <ul>
+            <li><a class="active" href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('main.products') }}">Products</a></li>
+            <li><a href="{{ url_for('main.locations') }}">Locations</a></li>
+            <li><a href="{{ url_for('main.movements') }}">Movement</a></li>
+            <li><a href="{{ url_for('main.movementlogs') }}">Movement Logs</a></li>
+            <li><a href="{{ url_for('main.logout') }}">Logout</a></li>
+        </ul>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="page-labels">
+        Welcome, {{ business_name }}
+    </div>
+    <div class="clr-four"></div>
+{% endblock %}

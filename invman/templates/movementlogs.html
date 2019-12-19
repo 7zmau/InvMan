@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block head %}
+    <div id="main-nav">
+        <ul>
+            <li><a href="{{ url_for('main.products') }}">Products</a></li>
+            <li><a href="{{ url_for('main.locations') }}">Locations</a></li>
+            <li><a href="{{ url_for('main.movements') }}">Movement</a></li>
+            <li><a class="active" href="{{ url_for('main.movementlogs') }}">Movement Logs</a></li>
+            <li><a href="{{ url_for('main.logout') }}">Logout</a></li>
+        </ul>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="page-labels">
+        Movement logs for {{ business_name['business_name'] }}
+    </div>
+    <div class="clr-four"></div>
+    {% if logtable %}
+    <div id="abbrv">PF: Product Factory, MO: Moved Out</div>
+    <div id="movement-log-div">
+        <table class="tables">
+            <tr>
+                <th>Movement ID</th>
+                <th>Timestamp</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Product ID</th>
+                <th>Quantity</th>
+            </tr>
+            {% for data in logtable %}
+            <tr>
+                <td>{{ data['movement_id'] }}</td>
+                <td>{{ data['timestamp'] }}</td>
+                <td>{{ data['from_location'] }}</td>
+                <td>{{ data['to_location'] }}</td>
+                <td>{{ data['prod_id'] }}</td>
+                <td>{{ data['qty'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+{% endblock %}
+{% block footer %}
+    <div class="invisible-footer"></div>
+    <div class="invisible-footer"></div>
+    <div class="invisible-footer"></div>
+    <div id="footer">
+        Created by <a href="http://twitter.com/7zmau" target="_blank" rel="noopener noreferrer"><b>Princeton Gomes</b></a>
+    </div>
+{% endblock %}

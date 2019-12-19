@@ -1,0 +1,4 @@
+include invman/schema.sql
+graft invman/static
+graft invman/templates
+global-exclude *.pyc

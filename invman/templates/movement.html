@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block head %}
+    <div id="main-nav">
+        <ul>
+            <li><a href="{{ url_for('main.products') }}">Products</a></li>
+            <li><a href="{{ url_for('main.locations') }}">Locations</a></li>
+            <li><a class="active" href="{{ url_for('main.movements') }}">Movement</a></li>
+            <li><a href="{{ url_for('main.movementlogs') }}">Movement Logs</a></li>
+            <li><a href="{{ url_for('main.logout') }}">Logout</a></li>
+        </ul>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="page-labels">
+        <h3>Make Movements</h3>
+    </div>
+    {% if error %}
+    <div class="error">
+        {{ error }}
+    </div>
+    {% endif %}
+    <div class="clr-four"></div>
+    <div id="make-movements-card">
+        <form id="movementform" method="post">
+            <div id="select-location-div">
+                <label id="move-from-label">Move from</label>
+                <select id="select-location" name="select-location">
+                    <option name="product-factory">Product Factory</option>
+                    {% if movefrom %}
+                    {% for location in movefrom %}
+                    <option name="{{ location[0] }}">{{ location[0] }}, {{ location[1] }}</option>
+                    {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+            <div id="select-product-div">
+                <label id="select-product-label">Select product</label id="select-product-label">
+                <select id="choose-product" name="choose-product">
+                    {% if products %}
+                    {% for product in products %}
+                    <option name="{{ product[0] }}">{{ product[0] }}, {{ product[1] }}</option>
+                    {% endfor %}
+                    {% else %}
+                    <option name="default">None</option>
+                    {% endif %}
+                </select>
+                <label>Quantity</label>
+                <input id="quantity-input" name="quantity" size="6" required>
+                <label id="qty-disp"></label>
+            </div>
+            <div id="move-to-div">
+                <label>Move to</label>
+                <select id="move-to" name="move-to">
+                    <option name="move-out">Move out</option>
+                    {% if moveto %}
+                    {% for location in moveto %}
+                    <option name="{{ location[0] }}">{{ location[0] }}, {{ location[1] }}</option>
+                    {% endfor %}
+                    {% endif %}
+                </select><br>
+            </div>
+            <div id="move-button-div">
+                <input type="submit" value="Move">
+            </div>
+        </form>
+    </div>
+        <div id="data-display">
+        {% if locationmap %}
+            {% for loc in locationmap %}
+            <div class="shops">
+                <div class="location-title">{{ loc }}</div>
+                <table class="tables">
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                    </tr>
+                    {% for data in locationmap[loc] %}
+                    <tr>
+                        <td>{{ data[0] }}</td>
+                        <td>{{ data[1] }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="page-info">
+                There are no products at any location.
+            </div>
+        {% endif %}
+        </div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% endblock %}

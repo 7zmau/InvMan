@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block head %}
+
+    <div id="main-nav">
+        <ul>
+            <li><a class="active" href="{{ url_for('main.products') }}">Products</a></li>
+            <li><a href="{{ url_for('main.locations') }}">Locations</a></li>
+            <li><a href="{{ url_for('main.movements') }}">Movement</a></li>
+            <li><a href="{{ url_for('main.movementlogs') }}">Movement Logs</a></li>
+            <li><a href="{{ url_for('main.logout') }}">Logout</a></li>
+        </ul>
+    </div>
+
+{% endblock %}
+{% block content %}
+    <div class="page-labels">
+        <h3>Manage products</h3>
+    </div>
+    {% if error %}
+    <div class="error">
+        {{ error }}
+    </div>
+    {% endif %}
+    <div class="side-panel">
+        <div class="input-cards">
+            <form method="post">
+                <div id="create-product-label">
+                    <h4>Create a Product</h4>
+                </div>
+                <hr>
+                <div id="form-product-id-label">
+                    <label>Product ID <small>(unique)</small></label>
+                </div>
+                <div id="form-product-id-input">
+                    <input name="insert_product_id" id="insert_product_id" required>
+                </div>
+                <div id="form-product-name-label">
+                    <label>Name</label>
+                </div>
+                <div id="form-product-name-input">
+                    <input name="insert_product_name" id="insert_product_name" required>
+                </div>
+                <div id="form-product-quantity-label">
+                    <label>Quantity</label>
+                </div>
+                <div id="form-product-quantity-input">
+                    <input name="insert_product_qty" id="insert_product_qty" required>
+                </div>
+                <div id="form-product-submit">
+                    <input name="submit_product" type="submit" value="Add">
+                </div>
+            </form>
+        </div>
+        {% if products %}
+        <div class="input-cards">
+            <form method="post">
+                <div id="update-product-label">
+                    <h4>Update Existing Product</h4>
+                </div>
+                <hr>
+                <div id="form-select-product">
+                    <label>Select product</label>
+                    <select name="select_product">
+                        {% for product in products %}
+                        <option name="{{ product[0] }}">{{ product[0]}}, {{ product[1] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div id="form-product-name-label">
+                    <label>New name <small>(Optional)</small></label>
+                </div>
+                <div id="form-product-name-input">
+                    <input name="update_product_name" id="insert_product_name">
+                </div>
+                <div id="form-product-quantity-label">
+                    <label>Quantity <small>(+/-)</small></label>
+                </div>
+                <div id="form-product-quantity-input">
+                    <input name="update_product_qty" id="insert_product_qty" required>
+                </div>
+                <div id="form-product-submit">
+                    <input name="update_product" type="submit" value="Update">
+                </div>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    <div class="clr-one"></div>
+    <div id="product-table">
+        {% if products %}
+        <table class="tables">
+            <tr>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Delete</th>
+            </tr>
+            {% for product in products %}
+            <tr>
+                {% for details in product %}
+                <td>{{ details }}</td>
+                {% endfor %}
+                <td class="table-links"><a href="{{ url_for('main.delete', id=product[0]) }}" onclick="return confirm('Are you sure?');">Delete</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <div class="page-info">
+            Nothing to show here. Add products!
+        </div>
+        {% endif %}
+    </div>
+    <div class="clr-two"></div>
+{% endblock %}

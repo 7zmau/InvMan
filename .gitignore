@@ -1,0 +1,5 @@
+*.pyc
+instance/invman.sqlite
+env/
+invman.egg-info/
+.vscode/

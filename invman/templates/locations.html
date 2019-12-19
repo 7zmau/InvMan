@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block head %}
+    <div id="main-nav">
+        <ul>
+            <li><a href="{{ url_for('main.products') }}">Products</a></li>
+            <li><a class="active" href="{{ url_for('main.locations') }}">Locations</a></li>
+            <li><a href="{{ url_for('main.movements') }}">Movement</a></li>
+            <li><a href="{{ url_for('main.movementlogs') }}">Movement Logs</a></li>
+            <li><a href="{{ url_for('main.logout') }}">Logout</a></li>
+        </ul>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="page-labels">
+        <h3>Manage locations</h3>
+    </div>
+    {% if error %}
+    <div class="error">
+        {{ error }}
+    </div>
+    {% endif %}
+    <div class="side-panel">
+        <div class="input-cards">
+            <form method="post">
+                <div id="create-location-label">
+                    <h4>Create a Location</h4>
+                </div>
+                <div id="form-location-id-label">
+                    <label>Location ID</label>
+                </div>
+                <div id="form-location-id-input">
+                    <input name="insert_location_id" id="insert_location_id" required>
+                </div>
+                <div id="form-location-name-label">
+                    <label>Location name</label>
+                </div>
+                <div id="form-location-name-input">
+                    <input name="insert_location_name" id="insert_location_name" required>
+                </div>
+                <div id="form-location-submit">
+                    <input name="submit_location" type="submit" value="Add">
+                </div>
+            </form>
+        </div>
+        {% if locations %}
+        <div class="input-cards">
+            <form method="post">
+                <div id="update-location-label">
+                    <h4>Update Location</h4>
+                </div>
+                <div id="form-select-location-label">
+                    <label>Select location</label>
+                </div>
+                <div id="form-select-location-input">
+                    <select name="select-location">
+                        {% for location in locations %}
+                        <option name="{{ location['location_id'] }}">{{ location['location_id'] }}, {{ location['location_name'] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div id="form-location-update-label">
+                    <label>New name</label>
+                </div>
+                <div id="form-location-update-input">
+                    <input name="location-name-update" id="location-name-update" required>
+                </div>
+                <div id="form-location-update-submit">
+                    <input name="update_location" type="submit" value="Update">
+                </div>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    <div class="clr-one"></div>
+    <div id="location-table">
+    {% if locations %}
+        <table class="tables">
+            <tr>
+                <th>Location ID</th>
+                <th>Location Name</th>
+                <th>Delete</th>
+            </tr>
+            {% for location in locations %}
+            <tr>
+                {% for details in location %}
+                <td>{{ details }}</td>
+                {% endfor %}
+                <td class="table-links"><a href="{{ url_for('main.delete_loc', lid=location['location_id']) }}" onclick="return confirm('This will also delete any products at that location. Confirm?');">Delete</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <div class="page-info">
+            Locations will be displayed here.<br>
+            Add locations from the side panel.
+        </div>
+    {% endif %}
+    </div>
+    <div class="clr-two"></div>
+{% endblock %}
