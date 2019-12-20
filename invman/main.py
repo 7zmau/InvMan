@@ -311,6 +311,8 @@ def movements():
             product_id = request.form['choose-product'].split(',')[0]
             quantity = int(request.form['quantity'])
             move_to = request.form['move-to'].split(',')[0]
+            if quantity < 0:
+                raise Exception('Invalid quantity.')
             if move_from == 'Product Factory':
                 moveid = 'PF-'
                 product_array = get_product('product_factory', product_id, quantity)
