@@ -2,16 +2,16 @@
 
 ### Installation
 ##### Create a virtual environment
-`python3 -m venv env`
+`$ python3 -m venv env`
 ##### Activate the environment
-`. env/bin/activate`
+`$ . env/bin/activate`
 ##### Install the project in the virtual environment
-`pip install -e .`
+`$ pip install -e .`
 ##### Run the project
-`export FLASK_APP=invman`
+`$ export FLASK_APP=invman`
 ###### Initialize the database and run
-`flask init-db`
-`flask run`
+`$ flask init-db`
+`$ flask run`
 
 ### Usage
 ##### Step 1: Register a business.
