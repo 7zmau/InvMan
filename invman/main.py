@@ -336,7 +336,10 @@ def movements():
             locations_with_products = products_at_locations()
             return render_template('movement.html', title='Movement', movefrom=movefrom_list, products=prod_list, moveto=move_to, locationmap=locations_with_products, error=error)
         except Exception as e:
-            error = "Error moving: " + str(e)
+            if "'NoneType' object is not subscriptable" in str(e):
+                error = "Error moving: Invalid product."
+            else:
+                error = "Error moving: " + str(e)
             
     # Retrieve products from the products table
     prod_list = product_list(b_id)
