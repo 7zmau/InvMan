@@ -15,7 +15,6 @@ bp = Blueprint("main", __name__, url_prefix="/main")
 
 # Required functions.
 
-
 def product_list(id):
     """ Retrieves products which are in the product table. """
 
