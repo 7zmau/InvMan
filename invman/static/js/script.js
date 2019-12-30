@@ -51,7 +51,7 @@ $(document).ready(function(){
 
     function updateMoveTo(l){
         var moveTos = [];
-        $("#move-from > option").each(function(){
+        $("#move-purchase > option").each(function(){
             moveTos.push(this.value);
         })
         var updatedMoveTos = [];
