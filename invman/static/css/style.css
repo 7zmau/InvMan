@@ -438,7 +438,7 @@ small{
     /*box-shadow:2px 2px;*/
     box-shadow:0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
-#qty-disp{
+.qty-disp{
     background: #999799;
     border-radius: 2px;
     padding: 3px;
@@ -467,20 +467,20 @@ small{
     margin: 2px;
     padding:2px;
 }
-#select-location-div{
+.select-location-div{
     margin-left:2em;
     margin-bottom:5px;
     margin-top: 5px;
 }
-#select-product-div{
+.select-product-div{
     margin-left:2em;
     margin-bottom:5px;
 }
-#move-to-div{
+.move-to-div{
     margin-left:2em;
     margin-bottom:5px;
 }
-#move-button-div{
+.move-button-div{
     margin-top: 0.7em;
     margin-left:2em;
     margin-bottom:5px;
@@ -586,5 +586,10 @@ small{
     font-family: 'Oxygen Mono', monospace;
     margin-right: 6em;
     margin-top:1em;
+    margin-bottom: 5px;
+}
+#select-operation-div{
+    margin-left: 1em;
+    margin-top: 5px;
     margin-bottom: 5px;
 }

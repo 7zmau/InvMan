@@ -15,12 +15,13 @@ bp = Blueprint("main", __name__, url_prefix="/main")
 
 # Required functions.
 
+
 def product_list(id):
     """ Retrieves products which are in the product table. """
 
     db = get_db()
     product_list = db.execute(
-        "SELECT product_id, product_name, quantity FROM product WHERE for_business = ? AND quantity > 0",
+        "SELECT product_id, product_name, quantity FROM product WHERE for_business = ? AND quantity > -1",
         (id,),
     ).fetchall()
     return product_list
@@ -171,10 +172,6 @@ def logmovements(
     """ Used by the movement route to log movements. """
     db = get_db()
     b_id = session.get("user_id")
-    if from_location == "Product Factory":
-        from_location = "PF"
-    if to_location == "Move out":
-        to_location = "MO"
     db.execute(
         "INSERT INTO movement (movement_id, from_location, to_location, prod_id, qty, b_id)"
         "VALUES (?, ?, ?, ?, ?, ?)",
@@ -253,11 +250,11 @@ def delete_loc(lid):
 
 @bp.route("/<id>/delete", methods=("GET",))
 def delete(id):
-    """ Used by the product page to delete a product. Doesn't actually delete it, just sets the quantity to 0. """
+    """ Used by the product page to delete a product. """
 
     db = get_db()
     b_id = session.get("user_id")
-    query = "UPDATE product SET quantity = 0 WHERE product_id = ? AND for_business = ?"
+    query = "UPDATE product SET quantity = -1 WHERE product_id = ? AND for_business = ?"
     db.execute(query, (id, b_id,))
     db.commit()
     return redirect(url_for("main.products"))
@@ -294,6 +291,7 @@ def products():
                     (prod_id, prod_name, prod_qty, b_id,),
                 )
                 db.commit()
+                return redirect(url_for("main.products"))
             except Exception as e:
                 if "UNIQUE constraint failed" in str(e):
                     error = "Error adding product: A product with that ID already exists or has been created before."
@@ -301,12 +299,6 @@ def products():
                     error = "Invalid quantity."
                 else:
                     error = str(e)
-            return render_template(
-                "products.html",
-                title="Products",
-                products=product_list(b_id),
-                error=error,
-            )
         if "update_product" in request.form:
             try:
                 prod_selected = request.form["select_product"].split(",")[0]
@@ -321,17 +313,12 @@ def products():
                     prod_qty, prod_selected, location="product_factory",
                 )
                 db.commit()
+                return redirect(url_for("main.products"))
             except Exception as e:
                 if "invalid literal for int() with base 10:" in str(e):
                     error = "Invalid quantity."
                 else:
                     error = str(e)
-            return render_template(
-                "products.html",
-                title="Products",
-                products=product_list(b_id),
-                error=error,
-            )
         else:
             pass
     # Retrieve and display products on the page.
@@ -361,21 +348,12 @@ def locations():
                     (loc_id, loc_name, b_id,),
                 )
                 db.commit()
+                return redirect(url_for("main.locations"))
             except Exception as e:
                 if "UNIQUE constraint failed:" in str(e):
                     error = "Location with that ID already exists."
                 else:
                     error = str(e)
-            location_list = db.execute(
-                "SELECT location_id, location_name FROM location where for_business = ?",
-                (b_id,),
-            ).fetchall()
-            return render_template(
-                "locations.html",
-                title="Locations",
-                locations=location_list,
-                error=error,
-            )
         if "update_location" in request.form:
             try:
                 loc_selected = request.form["select-location"].split(",")[0]
@@ -385,18 +363,9 @@ def locations():
                     (new_locname, loc_selected,),
                 )
                 db.commit()
+                return redirect(url_for("main.locations"))
             except Exception as e:
                 error = str(e)
-            location_list = db.execute(
-                "SELECT location_id, location_name FROM location where for_business = ?",
-                (b_id,),
-            ).fetchall()
-            return render_template(
-                "locations.html",
-                title="Locations",
-                locations=location_list,
-                error=error,
-            )
         else:
             pass
 
@@ -423,77 +392,62 @@ def movements():
     if request.method == "POST":
         # movement request - move product to a location
         try:
-            move_from = request.form["select-location"].split(",")[0]
-            product_id = request.form["choose-product"].split(",")[0]
-            quantity = int(request.form["quantity"])
-            move_to = request.form["move-to"].split(",")[0]
-            if quantity < 0:
-                raise Exception("Invalid quantity.")
-            if move_from == "Product Factory":
-                moveid = "PF-"
-                product_array = get_product("product_factory", product_id, quantity)
-            else:
-                moveid = move_from + "-"
-                product_array = get_product(move_from, product_id, quantity)
-            set_product(move_to, product_array)
-            if move_to == "Move out":
-                moveid += "MO"
-            else:
-                moveid += move_to
-            logmovements(moveid, move_from, move_to, product_id, quantity)
-            prod_list = product_list(b_id)
-            move_to = db.execute(
-                "SELECT location_id, location_name FROM location WHERE for_business = ?",
-                (b_id,),
-            ).fetchall()
-            warehouses = check_warehouse()
-            movefrom_list = []
-            for lids in warehouses:
-                query = "SELECT location_id, location_name FROM location where location_id = ?"
-                l_list = db.execute(query, (lids,)).fetchone()
-                movefrom_list.append(l_list)
-            locations_with_products = products_at_locations()
-            return render_template(
-                "movement.html",
-                title="Movement",
-                movefrom=movefrom_list,
-                products=prod_list,
-                moveto=move_to,
-                locationmap=locations_with_products,
-                error=error,
-            )
+            if "movement-operation" in request.form:
+                move_from = request.form["move-from"].split(",")[0]
+                prod = request.form["product-to-move"].split(",")[0]
+                quantity = int(request.form["quantity-to-move"])
+                if quantity < 0:
+                    raise Exception("Invalid quantity.")
+                move_to = request.form["move-to"].split(",")[0]
+                product_array = get_product(move_from, prod, quantity)
+                set_product(move_to, product_array)
+                logmovements("Movement", move_from, move_to, prod, quantity)
+            if "sales-operation" in request.form:
+                move_from = request.form["sales-location"].split(",")[0]
+                prod = request.form["sales-product"].split(",")[0]
+                quantity = int(request.form["quantity-to-sell"])
+                if quantity < 0:
+                    raise Exception("Invalid quantity.")
+                product_array = get_product(move_from, prod, quantity)
+                logmovements("Sales", move_from, " ", prod, quantity)
+            if "purchase-operation" in request.form:
+                move_from = "product_factory"
+                prod = request.form["purchase-product"].split(",")[0]
+                quantity = int(request.form["quantity-to-purchase"])
+                if quantity < 0:
+                    raise Exception("Invalid quantity.")
+                move_to = request.form["move-purchase"].split(",")[0]
+                product_array = get_product(move_from, prod, quantity)
+                set_product(move_to, product_array)
+                logmovements("Purchase", " ", move_to, prod, quantity)
+            return redirect(url_for("main.movements"))
         except Exception as e:
             if "'NoneType' object is not subscriptable" in str(e):
                 error = "Error moving: Invalid product."
             else:
                 error = "Error moving: " + str(e)
 
-    # Retrieve products from the products table
-    prod_list = product_list(b_id)
-
-    # Retrieve all locations
-    move_to = db.execute(
+    all_products = product_list(b_id)  # All products in the product table
+    all_locations = db.execute(
         "SELECT location_id, location_name FROM location WHERE for_business = ?",
         (b_id,),
-    ).fetchall()
+    ).fetchall()  # All the locations
 
-    # Get all locations which have products stored.
-    warehouses = check_warehouse()
-    # Creates a list of those locations along with their names.
-    movefrom_list = []
-    for lids in warehouses:
-        query = "SELECT location_id, location_name FROM location where location_id = ?"
-        l_list = db.execute(query, (lids,)).fetchone()
-        movefrom_list.append(l_list)
+    warehouses = []  # Locations which have products stored there.
+    lids = check_warehouse()
+    for ids in lids:
+        query = "SELECT location_id, location_name FROM location WHERE location_id = ?"
+        l = db.execute(query, (ids,)).fetchone()
+        warehouses.append(l)
 
     locations_with_products = products_at_locations()
 
     return render_template(
         "movement.html",
         title="Movement",
-        movefrom=movefrom_list,
-        products=prod_list,
-        moveto=move_to,
+        warehouses=warehouses,
+        allproducts=all_products,
+        alllocations=all_locations,
         locationmap=locations_with_products,
         error=error,
     )
