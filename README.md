@@ -1,4 +1,4 @@
-# InvMan
+# Moverr
 
 ### Installation
 ##### Create a virtual environment
