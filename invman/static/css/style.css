@@ -3,7 +3,7 @@
     *
     *
     *  Created by Princeton Gomes
-    *  For The Inventory Manager - InvMan
+    *  For Moverr - The Inventory Manager
     *  November 2019
     *
     *  [Color Palette: e5e059-bdd358-e0e0e0-999799-e5625e, Typography: 'PT Mono', 'Oxygen Mono', 'Open Sans']
@@ -165,7 +165,7 @@ select {
     width:100%;
 }
 .tables th{
-    background-color:#e5625e; 
+    background-color:#e5625e;
     font-weight:bold;
 }
 .tables, th, td {
@@ -550,7 +550,7 @@ small{
     padding-left:0px;
     padding-right:0px;
 }
-#form-location-update-label{        
+#form-location-update-label{
     margin-top:10px;
     margin-bottom:2px;
     margin-left:7px;

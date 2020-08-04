@@ -35,7 +35,7 @@ def index():
                     error = 'Business ID already exists'
             else:
                 error = 'Please enter a business ID and Name'
-            flash(error)  
+            flash(error)
     return render_template('index.html', title='Home')
 
 @bp.before_app_request
@@ -62,4 +62,3 @@ def login_required(view):
         return view(**kwargs)
 
     return wrapped_view
-

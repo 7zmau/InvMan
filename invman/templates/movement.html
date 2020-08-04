@@ -25,7 +25,7 @@
             <div id="select-location-div">
                 <label id="move-from-label">Move from</label>
                 <select id="select-location" name="select-location">
-                    <option name="product-factory">Product Factory</option>
+                    <option name="product-factory">Products</option>
                     {% if movefrom %}
                     {% for location in movefrom %}
                     <option name="{{ location[0] }}">{{ location[0] }}, {{ location[1] }}</option>
